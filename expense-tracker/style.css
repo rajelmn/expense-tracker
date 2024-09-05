@@ -2,6 +2,7 @@
         * {
             padding:0;
             margin-top:1em;
+            margin-left: 0;
             box-sizing:border-box;
         }
 
@@ -27,6 +28,12 @@
         .container  .first-input {
             display:flex;
             width:100%;
+            justify-content: space-between;
+        }
+
+        .designation , .other-expenses {
+            display: flex;
+            flex-grow: 1;
         }
         .first-input input {
             margin-bottom: .8em;
@@ -99,3 +106,9 @@
         .remove {
             cursor:pointer;
         }
+
+        @media (max-width: 400px) { 
+            .first-input , .second-input {
+                flex-direction: column;
+            }
+         }
