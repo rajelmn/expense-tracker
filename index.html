@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-inputs">
+            <h1>MAURITANIE 2E2D</h1>
+            <h2>JOURNAL DES COMPTE</h2>
+            <h4>Ajouter une nouvelle ligne:</h4>
+            <div class="first-input">
+                <div class="designation">
+                <p>Désignation:</p>
+                <input type="text">
+                </div>
+                <div class="other-expenses">
+                    <select name="autre" id="select">
+                        <option value="prix">prix</option>
+                        <option value="salaire">salaire</option>
+                        <option value="autre">autre</option>
+                    </select>
+                    <input type="number" id="drop-down">
+                </div>
+                
+            </div>
+            <div class="second-input">
+                <div class="date">
+                    <p>Date: </p>
+                    <input type="date">
+                </div>
+                <div class="amount">
+                    <p>Quantite: </p>
+                    <input type="number">
+                </div>
+            </div>
+            <button type="submit" id="btn">
+                ajouter une dépense</button>
+        </div>
+            <table>
+                <tr>
+                    <th>Désignation</th>
+                    <th>Date</th>
+                    <th>Quantite</th>
+                    <th>prix</th>
+                    <th>salaire</th>
+                    <th>autre</th>
+                    
+                </tr>
+              <td id="noExpense">
+                pas encore de dépenses</td>
+              
+            </table>
+        <p id="total">
+            
+        </p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
