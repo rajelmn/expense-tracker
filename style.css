@@ -1,15 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
         * {
             padding:0;
-            margin-top:1em;
-            margin-left: 0;
+            margin:0;
             box-sizing:border-box;
         }
 
         body {
             font-family: "Roboto", sans-serif;
         }
+        
         .container {
+            padding-top:5em;
             display:flex;
             flex-direction:column;
             text-align: center;
@@ -17,6 +18,11 @@
             height:100vh;
             width:90%;
             margin:auto;
+        }
+
+        .container p ,select{
+            text-align: left;
+            width: 30%;
         }
 
 
@@ -27,7 +33,7 @@
 
         .container  .first-input {
             display:flex;
-            width:100%;
+            /* width:100%; */
             justify-content: space-between;
         }
 
@@ -38,8 +44,8 @@
         .first-input input {
             margin-bottom: .8em;
             flex-grow:1;
-            border:1px solid black;
-            border-radius:0.6em;
+            border:0.6px solid black;
+            border-radius:0.4em;
             margin-left:1em
         }
 
@@ -67,9 +73,6 @@
             flex-grow:1;
         }
 
-        .amount p {
-            margin-left:.8em;
-        }
 
         button {
             display: block;
@@ -84,18 +87,18 @@
             border:none;
             transition:ease .3s;
         }
-
+/* 
         table {
             width:100%;
-        }
+        } */
 
-        th {
-            border-right: 1px solid black;
+         th, td {
+            border: 1px solid black;
         }
 
         tr:nth-child(2) {
             background:#eee;
-        }
+        } 
 
         button:hover {
             transform: scale(1.1);
@@ -112,10 +115,13 @@
 
         .remove {
             cursor:pointer;
+            border: none;
+            color: red;
+            font-size:2em;
         }
 
-        @media (max-width: 400px) { 
+        @media (max-width: 680px) { 
             .first-input , .second-input {
-                flex-direction: column;
+                flex-direction: column !important;
             }
          }
