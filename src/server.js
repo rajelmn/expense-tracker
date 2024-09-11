@@ -135,7 +135,7 @@ app.post('/getExpenses', async (req, res) => {
 
 app.use(express.static(path.join(__dirname, '..', 'src')));
 app.use(express.static(path.join(__dirname, '..', 'dist')));
-
+app.use('/images', express.static(path.join(__dirname, '..', 'images')));
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'dist/index.html'))
 })

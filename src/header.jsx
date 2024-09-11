@@ -18,7 +18,7 @@ export default function Header()  {
         <header>
             
             <div className="logo" width="100px">
-            <img src="../2e2d.webp" alt="" />
+            <img src="/images/2e2d.webp" alt="" />
             </div>
             <div className="links">
             <Link to="/">Home</Link>
