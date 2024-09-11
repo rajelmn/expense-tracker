@@ -20,9 +20,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie :{
-        // httpOnly: true,
-        // sameSite: "strict",
-        // secure: true,
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true,
         maxAge: 1000 * 60 * 20 // 20 minute
     }
   })

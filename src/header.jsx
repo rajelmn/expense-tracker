@@ -9,7 +9,7 @@ export default function Header()  {
     const Navigate = useNavigate();
     async function handleLogOut() {
         try {
-            fetch('/api/logout').then(() => Navigate('/login'));
+            fetch('/logout').then(() => Navigate('/login'));
         } catch(err) {
             console.log('failed logout', err)
         }
