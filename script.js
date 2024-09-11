@@ -10,7 +10,7 @@ const defaultValue = document.getElementById('noExpense') ;
 let total = document.getElementById('total');
 
 // function that will be used when deleting
-
+// test git push
 function handleDelete(remove, id) {
     remove.addEventListener('click', () => {
         let sum = 0;
