@@ -2,12 +2,18 @@ import express from "express";
 import cors from 'cors';
 import session from 'express-session';
 import mongoose from 'mongoose';
+import { fileURLToPath } from 'url';
+import path from 'node:path';
 import bcrypt, { genSalt } from 'bcrypt';
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import { UserModel, Expenses } from "./userdata.js";
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 mongoose.connect(process.env.DB_URL)
          .then(() => console.log('connected'))
          .catch((err) => console.log('didnt connect', err))
@@ -22,7 +28,7 @@ app.use(
     cookie :{
         httpOnly: true,
         sameSite: "strict",
-        secure: true,
+        // secure: true,
         maxAge: 1000 * 60 * 20 // 20 minute
     }
   })
@@ -126,6 +132,14 @@ app.post('/getExpenses', async (req, res) => {
     res.status(403).json({message: "couldnt get expenses"})
   }
 })
+
+app.use(express.static(path.join(__dirname, '..', 'src')));
+app.use(express.static(path.join(__dirname, '..', 'dist')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'dist/index.html'))
+})
+
 
 app.listen(3000, () => {
   console.log("app listening on 3000")
