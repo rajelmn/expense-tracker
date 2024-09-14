@@ -14,6 +14,9 @@
             height: 100vh;
         }
 
+        #numero-depense {
+            margin-left:2em;
+        }
        
 
         /* header {
@@ -51,17 +54,22 @@
             padding-top:5em;
             display:flex;
             flex-direction:column;
-            overflow-x:auto;
             text-align: center;
             /* border:2px solid orange; */
-            height:100vh;
-            width:90%;
+            /* width:90%;
+             */
+             padding:50px;
             margin:auto;
         }
 
         h4 {
             color:green;
             margin-top:1.5em;
+        }
+
+        .container button {
+            margin-top:20px;
+            margin-bottom:20px;
         }
 
         .container  .first-input {
@@ -176,7 +184,6 @@
         }
 
         .imputation-table {
-            width:100vw;
             margin-top: 2em;
         }
 
@@ -227,9 +234,22 @@
             .links {
                 display: none;
             }
+            #bottom-div {
+                flex-direction: column;
+            }
+            #numero-depense {
+                margin-top: 10px;
+                margin-left: 0;
+                text-align: left !important;
+            }
             .first-input , .second-input {
                 flex-direction: column !important;
             }
+            .container {
+                overflow-x:auto;
+                overflow-y:none;
+            }
+
             .container p ,#select{
                 text-align: left;
                 width: 30%;

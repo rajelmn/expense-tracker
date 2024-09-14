@@ -7,12 +7,13 @@ export default function App() {
   const [expenses, setExpenses] = useState([]);
   const [disable, setDisable] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [InputValue, setInputValue] = useState(1)
   const Navigate = useNavigate()
   const form = useRef(null);
 
   async function storeExpensesInDb(expense) {
     try {
-      fetch('/storeExpense', {
+      fetch('/api/storeExpense', {
         method: "POST",
         headers: {
           "Content-Type": 'application/json'
@@ -26,7 +27,7 @@ export default function App() {
 
   async function handleRemoveFromDb(id) {
     try{
-      fetch('/removeExpense', {
+      fetch('/api/removeExpense', {
         method: 'DELETE',
         body: JSON.stringify({id}),
         headers: {
@@ -39,8 +40,13 @@ export default function App() {
   }
 
   function handleSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
+    if(e.target.price.value === 'salaire'){
+      setInputValue('')
+    }
     const uniqueId = crypto.randomUUID();
+    console.log(e.target.numero.value);
+    console.log(e.target)
     const expense = {
           date: e.target.date.value,
           name: e.target.name.value,
@@ -48,7 +54,9 @@ export default function App() {
           uniquePrice: e.target.priceInput.value,
           imputation: e.target.imputation.value,
           price:e.target.price.value === 'salaire' ?e.target.priceInput.value : e.target.priceInput.value * e.target.qty.value,
-          id: uniqueId
+          numero:e.target.numero.value,
+          id: uniqueId,
+
     }
     setExpenses(prev => [
         ...prev,
@@ -78,7 +86,7 @@ export default function App() {
     useEffect(() => {
       async function validateUser() {
         try {
-          const request = await fetch('/validateUser', {
+          const request = await fetch('/api/validateUser', {
             method: "post",
             headers: {
               "Content-Type": "application/json"
@@ -99,7 +107,7 @@ export default function App() {
       }
       async function getExpensesFromDb() {
         try {
-          const allExpenses = await fetch('/getExpenses').then(res => res.json());
+          const allExpenses = await fetch('/api/getExpenses').then(res => res.json());
           setExpenses(allExpenses);
         } catch(err) {
           console.log(err)
@@ -127,7 +135,7 @@ export default function App() {
     <div className="container">
         <div className="top-inputs">
             <h1 style={{color:'orange', marginBottom:'20px'}}>MAURITANIE 2E2D</h1>
-            <h2>JOURNAL DES COMPTE</h2>
+            <h2>JOURNAL DES COMPTES</h2>
             <h4>Ajouter une nouvelle ligne:</h4>
             <form ref={form} onSubmit={handleSubmit}>  
             <div className="first-input">
@@ -153,14 +161,15 @@ export default function App() {
     
                 <div className="amount">
                     <p>Quantite: </p>
-                   <input type="number" name="qty" disabled={disable}/>
+                   <input type="number" name="qty" onChange={(e) => setInputValue(e.target.value) } disabled={disable} value={InputValue} placeholder="1"/>
                 </div>
             </div>
             <div style={{
               display: "flex"
-            }}>
+            }} id="bottom-div">
+              <div style={{display: 'flex'}}>
                 <p>
-                select a room
+                sélectionner une imputation
                 </p>
               <select name="imputation" id="imputation">
                 <option value="AF1">Ateliers Formations/ AF1</option>
@@ -170,6 +179,11 @@ export default function App() {
                 <option value="AI1">Acquisitions informatique /AI1</option>
                 <option value="DI1">Divers imprévus/DI1</option>
               </select>
+              </div>
+              <div id="numero-depense">
+                <label htmlFor="">N° d'impression</label>
+                <input type="text" style={{marginLeft:'30px'}} name="numero" required/>
+              </div>
             </div>
             <button type="submit" id="btn" >ajouter une dépense</button>
             </form>
@@ -184,6 +198,7 @@ export default function App() {
                     <th>prix unitaire</th>
                     <th>montant</th>
                     <th>imputation</th>
+                    <th>N° de dépense</th>
                     
                 </tr>
                 {expenses && expenses.map((expense, index) => 
@@ -205,6 +220,9 @@ export default function App() {
                   </td>
                   <td>
                   {expense.imputation}
+                  </td>
+                  <td>
+                    {expense.numero}
                   </td>
                   <td className="remove" onClick={() => handleRemove(expense.id)}>
                   X

@@ -89,6 +89,7 @@ app.post('/storeExpense', async (req, res) => {
         name: req.body.name,
         uniquePrice:req.body.uniquePrice ,
         imputation:req.body.imputation ,
+        numero: req.body.numero,
         price:req.body.price ,
         id: req.body.id,
       });

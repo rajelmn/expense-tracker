@@ -10,7 +10,7 @@ export default function Room( {roomName} ) {
     useEffect(() => {
         async function loadExpensesFromDb() {
             try {
-                const request = await fetch('/getExpenses', {
+                const request = await fetch('/api/getExpenses', {
                     method: "post",
                     headers: {
                         "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export default function Room( {roomName} ) {
     useEffect(() => {
         async function validateUser() {
           try {
-            const request = await fetch('/validateUser', {
+            const request = await fetch('/api/validateUser', {
               method: "post",
               headers: {
                 "Content-Type": "application/json"
@@ -50,7 +50,8 @@ export default function Room( {roomName} ) {
           }
         }
         console.log('mount')
-        validateUser()
+        validateUser();
+        
     }, [])
 
     return(
@@ -59,14 +60,15 @@ export default function Room( {roomName} ) {
             <>
             <Header />
             <h1 style={{color:'orange', textAlign: "center"}}>{roomName}</h1>
-        <div style={{
+        {/* <div style={{
             display:'flex',
             flexDirection: "column",
             alignItems: 'center',
             justifyContent: "center",
             width: "fit-content",
             margin:'auto'
-        }}>
+        }}> */}
+        <div className="container">
 
         <table className="imputation-table">
               <tbody>
@@ -77,7 +79,7 @@ export default function Room( {roomName} ) {
                     <th>prix unitaire</th>
                     <th>montant</th>
                     <th>imputation</th>
-                    
+                    <th>N° de dépense</th>
                 </tr>
                 {expenses.length && expenses.map((expense, index) => 
                 // {console.log('whats up')}
@@ -99,6 +101,9 @@ export default function Room( {roomName} ) {
                   </td>
                   <td>
                   {expense.imputation}
+                  </td>
+                  <td>
+                    {expense.numero}
                   </td>
                 </tr>
                 )}

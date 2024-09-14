@@ -10,6 +10,7 @@ const UserSchema = mongoose.Schema({
     uniquePrice: Number,
     imputation: String,
     price: Number,
+    numero: String,
     id: String,
 })
 
