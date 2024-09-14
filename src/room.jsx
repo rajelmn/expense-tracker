@@ -10,7 +10,7 @@ export default function Room( {roomName} ) {
     useEffect(() => {
         async function loadExpensesFromDb() {
             try {
-                const request = await fetch('/api/getExpenses', {
+                const request = await fetch('/getExpenses', {
                     method: "post",
                     headers: {
                         "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export default function Room( {roomName} ) {
     useEffect(() => {
         async function validateUser() {
           try {
-            const request = await fetch('/api/validateUser', {
+            const request = await fetch('/validateUser', {
               method: "post",
               headers: {
                 "Content-Type": "application/json"

@@ -6,7 +6,7 @@ export function Form() {
     async function handleSubmit(e){
         e.preventDefault();
         try {
-            const request = await fetch('/api/login', {
+            const request = await fetch('/login', {
                 method: "POST",
                 credentials: 'include',
                 body: JSON.stringify({user: e.target.name.value, password: e.target.password.value}),

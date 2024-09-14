@@ -13,7 +13,7 @@ export default function App() {
 
   async function storeExpensesInDb(expense) {
     try {
-      fetch('/api/storeExpense', {
+      fetch('/storeExpense', {
         method: "POST",
         headers: {
           "Content-Type": 'application/json'
@@ -27,7 +27,7 @@ export default function App() {
 
   async function handleRemoveFromDb(id) {
     try{
-      fetch('/api/removeExpense', {
+      fetch('/removeExpense', {
         method: 'DELETE',
         body: JSON.stringify({id}),
         headers: {
@@ -86,7 +86,7 @@ export default function App() {
     useEffect(() => {
       async function validateUser() {
         try {
-          const request = await fetch('/api/validateUser', {
+          const request = await fetch('/validateUser', {
             method: "post",
             headers: {
               "Content-Type": "application/json"
@@ -107,7 +107,7 @@ export default function App() {
       }
       async function getExpensesFromDb() {
         try {
-          const allExpenses = await fetch('/api/getExpenses').then(res => res.json());
+          const allExpenses = await fetch('/getExpenses').then(res => res.json());
           setExpenses(allExpenses);
         } catch(err) {
           console.log(err)
