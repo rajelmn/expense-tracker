@@ -5,8 +5,9 @@ import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
 import path from 'node:path';
 import bcrypt, { genSalt } from 'bcrypt';
-import dotenv from 'dotenv'
-import cookieParser from 'cookie-parser'
+import dotenv from 'dotenv';
+import MongoStore from 'connect-mongo';
+import cookieParser from 'cookie-parser';
 import { UserModel, Expenses } from "./userdata.js";
 
 dotenv.config();
@@ -30,18 +31,27 @@ app.use(
         sameSite: "strict",
         // secure: true,
         maxAge: 1000 * 60 * 20 // 20 minute
-    }
+    },
+    store: MongoStore.create({
+      mongoUrl: process.env.DB_url,
+    }),
   })
 )
 
+const saltRounds = 10;
+const password = "FASTI123";
+const hashedPass = await bcrypt.hash(password, saltRounds);
+console.log(hashedPass);
+
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+  origin: process.env.URL
+}));
 app.use(express.json());
 
 app.post('/login', async (req, res) => {
   try{
-    const salt = await genSalt(10);
-    const test = (req.body.user === process.env.ADMIN_NAME && await bcrypt.compare(req.body.password, process.env.ADMIN_PASSWORD))
+    const test = (req.body.user === process.env.ADMIN_NAME && await bcrypt.compare(req.body.password, process.env.ADMIN_PASSWORd))
     console.log(test)
     if(!test) {
       console.log('not the admin')

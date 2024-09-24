@@ -181,7 +181,7 @@ export default function App() {
               </select>
               </div>
               <div id="numero-depense">
-                <label htmlFor="">N° d'impression</label>
+                <label htmlFor="">N° de depense</label>
                 <input type="text" style={{marginLeft:'30px'}} name="numero" required/>
               </div>
             </div>
