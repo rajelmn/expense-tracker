@@ -33,16 +33,10 @@ app.use(
         maxAge: 1000 * 60 * 20 // 20 minute
     },
     store: MongoStore.create({
-      mongoUrl: process.env.DB_url,
+      mongoUrl: process.env.DB_URL,
     }),
   })
 )
-
-const saltRounds = 10;
-const password = "FASTI123";
-const hashedPass = await bcrypt.hash(password, saltRounds);
-console.log(hashedPass);
-
 app.use(cookieParser());
 app.use(cors({
   origin: process.env.URL
