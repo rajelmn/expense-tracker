@@ -10,6 +10,20 @@
             overflow-x: auto;
         }
 
+        .no-border {
+            border:none !important;
+            background-color: white !important;
+        }
+
+        .edit {
+            width:50px;
+            height:30px;
+            background:#939292;
+        }
+        .edit:hover {
+            background: #c1bfbf
+        }
+
         #root {
             height: 100vh;
         }

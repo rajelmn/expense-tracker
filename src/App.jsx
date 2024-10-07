@@ -1,6 +1,7 @@
 import { useEffect,useState,useRef } from "react";
 import { Link } from "react-router-dom";
 import { Navigate, useNavigate } from "react-router-dom";
+import { CiEdit as Edit } from "react-icons/ci";
 import Header from "./header";
 export default function App() {
 
@@ -19,9 +20,49 @@ export default function App() {
           "Content-Type": 'application/json'
         },
         body: JSON.stringify(expense),
+        credentials: 'include'
       })
     } catch(err) {
       console.error(err);
+    }
+  }
+
+  async function handleSubmitEdit(id) {
+    try {
+      const newExpense = expenses.find(expense => expense.id === id)
+      setExpenses(prev => prev.map(expense => {
+        if(expense.id === id) {
+          console.log(Number(expense.qty) * Number(expense.uniquePrice) || expense.uniquePrice)
+          return {...expense, isEditing:false, price: Number(expense.qty) * Number(expense.uniquePrice)} || expense.uniquePrice
+        }
+        return expense
+      }))
+      const req = await fetch('/editExpense', {
+        method: "post",
+        headers: {
+          "Content-Type": 'application/json'
+        },
+        body: JSON.stringify({newExpense}),
+        credentials: "include"
+      })
+      console.log(JSON.stringify({newExpense}), 'json')
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  async function handleEditExpense(id) {
+    try {
+      console.log('what');
+      const editedExpense = expenses.find(expense => expense.id === id);
+      setExpenses(prev => prev.map(item => {
+        if(item.id === id) {
+          return {...item, isEditing: true}
+        }
+        return {...item, isEditing: false}
+      }))
+    } catch(err) {
+      console.log(err)
     }
   }
 
@@ -32,31 +73,50 @@ export default function App() {
         body: JSON.stringify({id}),
         headers: {
           "Content-Type": "application/json"
-        }
+        },
+        credentials: "include"
       })
     }catch(err) {
       console.log(err)
     }
   }
 
+  function handleExpenseChange(e, id) {
+    const {name} = e.target;
+    try {
+      setExpenses(prev => prev.map(expense => {
+        if(expense.id === id) {
+          return {...expense, [name]: e.target.value}
+        }
+        return expense
+      }))
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
-    if(e.target.price.value === 'salaire'){
-      setInputValue('')
-    }
+
+    // if(e.target.price.value === 'salaire'){
+    //   setInputValue('')
+    // }
     const uniqueId = crypto.randomUUID();
-    console.log(e.target.numero.value);
-    console.log(e.target)
+
     const expense = {
           date: e.target.date.value,
           name: e.target.name.value,
-          qty: e.target.qty.value,
-          uniquePrice: e.target.priceInput.value,
+          qty: e.target.qty.value || 1,
+          uniquePrice: e.target.uniquePrice.value,
           imputation: e.target.imputation.value,
-          price:e.target.price.value === 'salaire' ?e.target.priceInput.value : e.target.priceInput.value * e.target.qty.value,
+          price:e.target.price.value === 'salaire' ?e.target.uniquePrice.value : e.target.uniquePrice.value * e.target.qty.value,
           numero:e.target.numero.value,
           id: uniqueId,
-
+    }
+    const doesNumeroExist = expenses.find((item) => +item.numero === +expense.numero) ? true : false; 
+    console.log(doesNumeroExist)
+    if(doesNumeroExist) {
+      return alert("il y'a deja une expense avec le meme N~ de depense")
     }
     setExpenses(prev => [
         ...prev,
@@ -91,6 +151,7 @@ export default function App() {
             headers: {
               "Content-Type": "application/json"
             },
+            credentials: "include"
           })
           console.log(request.ok)
           if(!request.ok) {
@@ -107,7 +168,7 @@ export default function App() {
       }
       async function getExpensesFromDb() {
         try {
-          const allExpenses = await fetch('/getExpenses').then(res => res.json());
+          const allExpenses = await fetch('/getExpenses', {credentials: "include"}).then(res => res.json());
           setExpenses(allExpenses);
         } catch(err) {
           console.log(err)
@@ -118,14 +179,7 @@ export default function App() {
       getExpensesFromDb()
       
         
-    }, [])
-    
-    // useEffect(() => {
-    //   // if(!expenses.length) return
-    //   if(expenses.length > 0) {
-    //     localStorage.setItem('items', JSON.stringify(expenses))
-    //   }
-    // }, [expenses])
+    }, [Navigate])
   
   return(
     <>
@@ -149,7 +203,7 @@ export default function App() {
                         <option value="salaire">salaire</option>
                         <option value="autre">autre</option>
                     </select>
-                    <input type="number" name="priceInput" id="drop-down" /> 
+                    <input type="number" name="uniquePrice" id="drop-down" /> 
                 </div>
                 
             </div>
@@ -201,31 +255,60 @@ export default function App() {
                     <th>N° de dépense</th>
                     
                 </tr>
-                {expenses && expenses.map((expense, index) => 
+                {expenses && expenses.sort((a, b) => Number(a.numero) - Number(b.numero) ).map((expense, index) => 
                 <tr key={index}>
+                  {/* <form>'</form> */}
+                  {console.log(Number(expense.numero))}
                   <td>
-                    {expense.date}
+                    {expense.isEditing ? (
+                      <input type={"date"} name="date" value={expense.date} onChange={(e) => handleExpenseChange(e, expense.id)} />
+                    ): <>{expense.date}</>}
                   </td>
                   <td>
-                    {expense.name}
+                  {expense.isEditing ? (
+                      <input name="name" value={expense.name || ""} type="text"  onChange={(e) => handleExpenseChange(e, expense.id)}/>
+                    ): <>{expense.name}</>}
                   </td>
                   <td>
-                    {expense.qty}
+                  {expense.isEditing ? (
+                      <input name="qty" type="number"  value={expense.qty || ""} onChange={(e) => handleExpenseChange(e, expense.id)}/>
+                    ): <>{expense.qty}</>}
                   </td>
                   <td>
-                  {expense.uniquePrice}
+                   {expense.isEditing ? (
+                      <input name="uniquePrice"  style={{
+                      width:'100px'
+                    }}  value={expense.uniquePrice || ''} onChange={(e) => handleExpenseChange(e, expense.id)}  type="text"/>
+                    ): <>{expense.uniquePrice}</>}
                   </td>
                   <td>
-                  {expense.price}
+                   {expense.price || expense.uniquePrice}
                   </td>
                   <td>
-                  {expense.imputation}
+                   {expense.isEditing ? (
+                      <input  style={{
+                        width:'100px'
+                      }}  name="imputation" value={expense.imputation || ""} onChange={(e) => handleExpenseChange(e, expense.id)} type="text"/>
+                    ): <>{expense.imputation}</>}  
                   </td>
                   <td>
-                    {expense.numero}
+                  {expense.isEditing ? (
+                      <input  style={{
+                        width:'100px'
+                      }}  name="numero" value={expense.numero || ""} onChange={(e) => handleExpenseChange(e, expense.id)} type="text"/>
+                    ): <>{expense.numero}</>}  
                   </td>
                   <td className="remove" onClick={() => handleRemove(expense.id)}>
                   X
+                  </td>
+                  <td className="no-border">
+                    {expense.isEditing ? (
+                      <button className="edit ml-1" onClick={() => handleSubmitEdit(expense.id)}>Save</button>
+                    ): (
+
+                  <button className="edit ml-1" onClick={() => handleEditExpense(expense.id)}>Edit</button>
+                    )}
+
                   </td>
                 </tr>
                 )}
@@ -245,3 +328,4 @@ export default function App() {
     </>
   )
 }
+

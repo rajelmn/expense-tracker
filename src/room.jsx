@@ -15,7 +15,8 @@ export default function Room( {roomName} ) {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({roomName})
+                    body: JSON.stringify({roomName}),
+                    credentials: "include"
                 })
                 const expenses = await request.json();
                 console.log(expenses);
@@ -35,6 +36,7 @@ export default function Room( {roomName} ) {
               headers: {
                 "Content-Type": "application/json"
               },
+              credentials: "include"
             })
             console.log(request.ok)
             if(!request.ok) {
@@ -81,7 +83,7 @@ export default function Room( {roomName} ) {
                     <th>imputation</th>
                     <th>N° de dépense</th>
                 </tr>
-                {expenses.length && expenses.map((expense, index) => 
+                {expenses.length && expenses.sort((a, b) => Number(a.numero) - Number(b.numero) ).map((expense, index) => 
                 // {console.log('whats up')}
                 <tr key={index}>
                   <td>

@@ -15,6 +15,13 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+function isAuthenticated(req, res, next) {
+  if(!req.session.logged) {
+    return res.status(401).json({message: "not authenticated"});
+  }
+  next();
+}
+
 mongoose.connect(process.env.DB_URL)
          .then(() => console.log('connected'))
          .catch((err) => console.log('didnt connect', err))
@@ -23,7 +30,7 @@ const app = express();
 
 app.use(
   session({
-    secret: "mySecretKey",
+    secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false,
     cookie :{
@@ -37,15 +44,17 @@ app.use(
     }),
   })
 )
+
 app.use(cookieParser());
 app.use(cors({
-  origin: process.env.URL
+  origin: process.env.URL,
+  credentials: true,
 }));
 app.use(express.json());
 
 app.post('/login', async (req, res) => {
   try{
-    const test = (req.body.user === process.env.ADMIN_NAME && await bcrypt.compare(req.body.password, process.env.ADMIN_PASSWORd))
+    const test = (req.body.user === process.env.ADMIN_NAME && await bcrypt.compare(req.body.password, process.env.ADMIN_PASSWORD))
     console.log(test)
     if(!test) {
       console.log('not the admin')
@@ -82,7 +91,7 @@ app.post('/validateUser', async (req, res) => {
   }
 })
 
-app.post('/storeExpense', async (req, res) => {
+app.post('/storeExpense',isAuthenticated, async (req, res) => {
    try {
     console.log('storing')
     console.log(req.body)
@@ -104,7 +113,18 @@ app.post('/storeExpense', async (req, res) => {
    }
 })
 
-app.get('/getExpenses', async (req, res) => {
+app.post('/editExpense',isAuthenticated, async (req, res) => {
+  console.log(req.body)
+  const {newExpense} = req.body;
+  newExpense.price = +newExpense.qty * +newExpense.uniquePrice || newExpense.uniquePrice
+  try {
+    await Expenses.findOneAndUpdate({id: newExpense.id}, newExpense)
+  } catch(err) {
+    console.log(err)
+  }
+})
+
+app.get('/getExpenses', isAuthenticated,async (req, res) => {
   try {
     const expenses = await Expenses.find().exec();
     res.status(200).json(expenses);
@@ -114,7 +134,7 @@ app.get('/getExpenses', async (req, res) => {
   }
 })
 
-app.delete('/removeExpense', async (req, res) => {
+app.delete('/removeExpense',isAuthenticated, async (req, res) => {
   try {
     console.log('deleting')
     const test = await Expenses.findOne(req.body);
@@ -126,7 +146,7 @@ app.delete('/removeExpense', async (req, res) => {
   }
 })
 
-app.post('/getExpenses', async (req, res) => {
+app.post('/getExpenses', isAuthenticated,async (req, res) => {
   try {
     // console.log(req.body);
     const expenses = await Expenses.find({imputation: req.body.roomName}).exec();
@@ -138,7 +158,7 @@ app.post('/getExpenses', async (req, res) => {
   }
 })
 
-app.use(express.static(path.join(__dirname, '..', 'src')));
+// app.use(express.static(path.join(__dirname, '..', 'src')));
 app.use(express.static(path.join(__dirname, '..', 'dist')));
 app.use('/images', express.static(path.join(__dirname, '..', 'images')));
 app.get('*', (req, res) => {
